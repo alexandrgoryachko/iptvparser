@@ -26,7 +26,7 @@ module.exports.downloadGuide = function(req, res) {
         console.log(2);
         functions.getGzipped(path, guidePath, function(err) {
             console.log(3);
-            functions.formatGuide(guidePath);
+            //functions.formatGuide(guidePath);
             console.log(4);
             res.statusCode = 200;
             res.end(JSON.stringify({
@@ -38,7 +38,7 @@ module.exports.downloadGuide = function(req, res) {
         console.log(5);
         functions.download(path, guidePath, function(err) {
             console.log(6);
-            functions.formatGuide(guidePath);
+            //functions.formatGuide(guidePath);
             console.log(7);
             res.statusCode = 200;
             res.end(JSON.stringify({
