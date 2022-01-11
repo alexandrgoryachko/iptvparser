@@ -21,9 +21,13 @@ module.exports.getGuide = function(req, res) {
 module.exports.downloadGuide = function(req, res) {
     const guidePath = constants.DIR_FILES + constants.GUIDE_IPTV_MANAGER;
     const path = req.url.split('?path=').pop();
+    console.log(1);
     if (path.match("gz$") != null) {
+        console.log(2);
         functions.getGzipped(path, guidePath, function(err) {
+            console.log(3);
             functions.formatGuide(guidePath);
+            console.log(4);
             res.statusCode = 200;
             res.end(JSON.stringify({
                 isSuccess: !err,
@@ -31,8 +35,11 @@ module.exports.downloadGuide = function(req, res) {
             }));
         });
     } else {
+        console.log(5);
         functions.download(path, guidePath, function(err) {
+            console.log(6);
             functions.formatGuide(guidePath);
+            console.log(7);
             res.statusCode = 200;
             res.end(JSON.stringify({
                 isSuccess: !err,
