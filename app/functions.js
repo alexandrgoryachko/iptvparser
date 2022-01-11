@@ -140,7 +140,7 @@ module.exports.saveFile = function(headers, body) {
 
 module.exports.formatGuide = function(filePath) {
     let data = fs.readFileSync(filePath, 'utf8');
-    //data = data.replace(/(\r\n|\n|\r|\t)/gm, '')
+    data = data.replace(/(\r\n|\n|\r|\t)/gm, '');
     //            .replace(/<\/channel>/gm, '</channel>\n')
     //            .replace(/<\/programme>/gm, '</programme>\n')
     //            .replace(/^\s*/gm, ''); 
