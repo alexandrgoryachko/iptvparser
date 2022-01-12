@@ -157,6 +157,15 @@ module.exports.formatGuide = function(filePath) {
     fs.writeFileSync(filePath, data);
 }
 
+module.exports.ungzipFile = function(filePath) {
+    const fileContents = fs.createReadStream(filePath);
+    filePath = filePath.replace(/\.gz$/g, '');
+    console.log(3, filePath);
+    const writeStream = fs.createWriteStream(filePath);
+    const unzip = zlib.createGunzip();
+    fileContents.pipe(unzip).pipe(writeStream);
+}
+
 var formatProgramme = function(data) {
     return data.replace(/(\r\n|\n|\r|\t)/gm, '')
                 .replace(/<\/channel>/gm, '</channel>\n')
