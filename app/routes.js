@@ -21,15 +21,12 @@ module.exports.getGuide = function(req, res) {
 module.exports.downloadGuide = function(req, res) {
     const path = req.url.split('?path=').pop();
     let guidePath = constants.DIR_FILES + constants.GUIDE_IPTV_MANAGER;
-    console.log(1, guidePath);
     functions.download(path, guidePath + (path.match("gz$") != null ? '.gz' : ''), function(err) {
-        console.log(2);
         if (path.match("gz$") != null) {
             //unzip file
             functions.ungzipFile(guidePath + (path.match("gz$") != null ? '.gz' : ''));
         }
         functions.formatGuide(guidePath);
-        console.log(7);
         res.statusCode = 200;
         res.end(JSON.stringify({
             isSuccess: !err,

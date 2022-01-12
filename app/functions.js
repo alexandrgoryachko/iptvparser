@@ -8,18 +8,14 @@ const request = require('request');
 const constants = require('./constants');
 
 module.exports.download = function(uri, filename, callback) {
-    console.log(5.1);
     request.head(uri, function(err, res) {
         err = res.statusCode === 200 
                 ? null 
                 : 'Status code was sent not equals 200 in response to ' + uri;
-        console.log(5.2);
         if (err) {
             callback(err);
         } else {
-            console.log(5.3);
             request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-            console.log(5.4);
         }
     });
 }
@@ -27,22 +23,18 @@ module.exports.download = function(uri, filename, callback) {
 module.exports.getGzipped = function(uri, filename, callback) {
     // buffer to store the streamed decompression
     var buffer = [];
-    console.log(2.1);
+
     (uri.match("^https") !== null ? https : http).get(uri, function(res) {
-        console.log(2.2);
         // pipe the response into the gunzip to decompress
-        var gunzip = zlib.createGunzip();       
-        console.log(2.3);     
+        var gunzip = zlib.createGunzip();            
         res.pipe(gunzip);
-        console.log(2.4);
+
         gunzip.on('data', function(data) {
             // decompression chunk ready, add it to the buffer
             buffer.push(data.toString())
 
         }).on("end", function() {
-            console.log(2.5);
             fs.writeFileSync(filename, buffer.join(""));
-            console.log(2.6);
             // response and decompression complete, join the buffer and return
             callback(); 
 
@@ -57,14 +49,12 @@ module.exports.getGzipped = function(uri, filename, callback) {
 module.exports.getProgrammes = function(channel) {
     const guidePath = constants.DIR_FILES + constants.GUIDE_IPTV_MANAGER;
     const data = fs.readFileSync(guidePath, 'utf8');
-    const regex = new RegExp('<programme.+channel="(' + channel + ')"(.|\r\n|\n|\r|\t)+?<\/programme>', 'gm');
+    const regex = new RegExp('<programme.+channel="(' + channel + ')".+', 'gm');
     const matches = data.match(regex);
-    let result = '';
     if (matches) {
-        result = matches.map(line => line.replace(/<icon.*\/>/gm, '')).join('\n');
-        result = formatProgramme(result);
+        return matches.map(line => line.replace(/<icon.*\/>/gm, '')).join('\n');
     }
-    return result;
+    return '';
 }
 
 module.exports.isFileExist = function(path) {
@@ -153,22 +143,14 @@ module.exports.formatGuide = function(filePath) {
     data = data.replace(/(\r\n|\n|\r|\t)/gm, '')
                 .replace(/<\/channel>/gm, '</channel>\n')
                 .replace(/<\/programme>/gm, '</programme>\n')
-                .replace(/^\s*/gm, ''); 
+                .replace(/^\s*/gm, '');
     fs.writeFileSync(filePath, data);
 }
 
 module.exports.ungzipFile = function(filePath) {
     const fileContents = fs.createReadStream(filePath);
     filePath = filePath.replace(/\.gz$/g, '');
-    console.log(3, filePath);
     const writeStream = fs.createWriteStream(filePath);
     const unzip = zlib.createGunzip();
     fileContents.pipe(unzip).pipe(writeStream);
-}
-
-var formatProgramme = function(data) {
-    return data.replace(/(\r\n|\n|\r|\t)/gm, '')
-                .replace(/<\/channel>/gm, '</channel>\n')
-                .replace(/<\/programme>/gm, '</programme>\n')
-                .replace(/^\s*/gm, ''); 
 }
