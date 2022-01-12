@@ -8,14 +8,18 @@ const request = require('request');
 const constants = require('./constants');
 
 module.exports.download = function(uri, filename, callback) {
+    console.log(5.1);
     request.head(uri, function(err, res) {
         err = res.statusCode === 200 
                 ? null 
                 : 'Status code was sent not equals 200 in response to ' + uri;
+        console.log(5.2);
         if (err) {
             callback(err);
         } else {
+            console.log(5.3);
             request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+            console.log(5.4);
         }
     });
 }
