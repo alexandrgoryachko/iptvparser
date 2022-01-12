@@ -49,12 +49,14 @@ module.exports.getGzipped = function(uri, filename, callback) {
 module.exports.getProgrammes = function(channel) {
     const guidePath = constants.DIR_FILES + constants.GUIDE_IPTV_MANAGER;
     const data = fs.readFileSync(guidePath, 'utf8');
-    const regex = new RegExp('<programme.+channel="(' + channel + ')".+', 'gm');
+    const regex = new RegExp('<programme.+channel="(' + channel + ')"(.|\r\n|\n|\r|\t)+?<\/programme>', 'gm');
     const matches = data.match(regex);
+    let result = '';
     if (matches) {
-        return matches.map(line => line.replace(/<icon.*\/>/gm, '')).join('\n');
+        result = matches.map(line => line.replace(/<icon.*\/>/gm, '')).join('\n');
+        result = formatProgramme(result);
     }
-    return '';
+    return result;
 }
 
 module.exports.isFileExist = function(path) {
@@ -147,10 +149,9 @@ module.exports.formatGuide = function(filePath) {
     fs.writeFileSync(filePath, data);
 }
 
-module.exports.ungzipFile = function(filePath, callback) {
-    const fileContents = fs.createReadStream(filePath);
-    filePath = filePath.replace(/\.gz$/g, '');
-    const writeStream = fs.createWriteStream(filePath);
-    const unzip = zlib.createGunzip();
-    fileContents.pipe(unzip).pipe(writeStream).on('close', callback);
+var formatProgramme = function(data) {
+    return data.replace(/(\r\n|\n|\r|\t)/gm, '')
+                .replace(/<\/channel>/gm, '</channel>\n')
+                .replace(/<\/programme>/gm, '</programme>\n')
+                .replace(/^\s*/gm, ''); 
 }

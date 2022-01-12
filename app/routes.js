@@ -25,7 +25,6 @@ module.exports.downloadGuide = function(req, res) {
         if (path.match("gz$") != null) {
             //unzip file
             functions.ungzipFile(guidePath + (path.match("gz$") != null ? '.gz' : ''), function(err) {
-                functions.formatGuide(guidePath);
                 res.statusCode = 200;
                 res.end(JSON.stringify({
                     isSuccess: !err,
@@ -33,7 +32,6 @@ module.exports.downloadGuide = function(req, res) {
                 }));
             });
         } else {
-            functions.formatGuide(guidePath);
             res.statusCode = 200;
             res.end(JSON.stringify({
                 isSuccess: !err,
