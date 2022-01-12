@@ -19,27 +19,28 @@ module.exports.getGuide = function(req, res) {
 }
 
 module.exports.downloadGuide = function(req, res) {
-    const guidePath = constants.DIR_FILES + constants.GUIDE_IPTV_MANAGER;
     const path = req.url.split('?path=').pop();
-    if (path.match("gz$") != null) {
-        functions.getGzipped(path, guidePath, function(err) {
+    let guidePath = constants.DIR_FILES + constants.GUIDE_IPTV_MANAGER;
+    functions.download(path, guidePath + (path.match("gz$") != null ? '.gz' : ''), function(err) {
+        if (path.match("gz$") != null) {
+            //unzip file
+            functions.ungzipFile(guidePath + (path.match("gz$") != null ? '.gz' : ''), function(err) {
+                functions.formatGuide(guidePath);
+                res.statusCode = 200;
+                res.end(JSON.stringify({
+                    isSuccess: !err,
+                    error: err
+                }));
+            });
+        } else {
             functions.formatGuide(guidePath);
             res.statusCode = 200;
             res.end(JSON.stringify({
                 isSuccess: !err,
                 error: err
             }));
-        });
-    } else {
-        functions.download(path, guidePath, function(err) {
-            functions.formatGuide(guidePath);
-            res.statusCode = 200;
-            res.end(JSON.stringify({
-                isSuccess: !err,
-                error: err
-            }));
-        });
-    }
+        }
+    });
 }
 
 module.exports.downloadFile = function(req, res) {
