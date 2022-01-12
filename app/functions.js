@@ -23,18 +23,22 @@ module.exports.download = function(uri, filename, callback) {
 module.exports.getGzipped = function(uri, filename, callback) {
     // buffer to store the streamed decompression
     var buffer = [];
-
+    console.log(2.1);
     (uri.match("^https") !== null ? https : http).get(uri, function(res) {
+        console.log(2.2);
         // pipe the response into the gunzip to decompress
-        var gunzip = zlib.createGunzip();            
+        var gunzip = zlib.createGunzip();       
+        console.log(2.3);     
         res.pipe(gunzip);
-
+        console.log(2.4);
         gunzip.on('data', function(data) {
             // decompression chunk ready, add it to the buffer
             buffer.push(data.toString())
 
         }).on("end", function() {
+            console.log(2.5);
             fs.writeFileSync(filename, buffer.join(""));
+            console.log(2.6);
             // response and decompression complete, join the buffer and return
             callback(); 
 
