@@ -24,14 +24,22 @@ module.exports.downloadGuide = function(req, res) {
     functions.download(path, guidePath + (path.match("gz$") != null ? '.gz' : ''), function(err) {
         if (path.match("gz$") != null) {
             //unzip file
-            functions.ungzipFile(guidePath + (path.match("gz$") != null ? '.gz' : ''));
+            functions.ungzipFile(guidePath + (path.match("gz$") != null ? '.gz' : ''), function(err) {
+                functions.formatGuide(guidePath);
+                res.statusCode = 200;
+                res.end(JSON.stringify({
+                    isSuccess: !err,
+                    error: err
+                }));
+            });
+        } else {
+            functions.formatGuide(guidePath);
+            res.statusCode = 200;
+            res.end(JSON.stringify({
+                isSuccess: !err,
+                error: err
+            }));
         }
-        functions.formatGuide(guidePath);
-        res.statusCode = 200;
-        res.end(JSON.stringify({
-            isSuccess: !err,
-            error: err
-        }));
     });
 }
 

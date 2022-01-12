@@ -147,10 +147,10 @@ module.exports.formatGuide = function(filePath) {
     fs.writeFileSync(filePath, data);
 }
 
-module.exports.ungzipFile = function(filePath) {
+module.exports.ungzipFile = function(filePath, callback) {
     const fileContents = fs.createReadStream(filePath);
     filePath = filePath.replace(/\.gz$/g, '');
     const writeStream = fs.createWriteStream(filePath);
     const unzip = zlib.createGunzip();
-    fileContents.pipe(unzip).pipe(writeStream);
+    fileContents.pipe(unzip).pipe(writeStream).on('close', callback);
 }
