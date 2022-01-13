@@ -170,5 +170,7 @@ var formatProgramme = function(data) {
                 .replace(/<\/programme>/gm, '</programme>\n')
                 .replace(/<category.+<\/category>/gm, '')
                 .replace(/<rating.+<\/rating>/gm, '')
+                .replace(/&quot;\}\}.+(has_video).+&quot;/gm, '')
+                .replace(/&quot;/gm, '"')
                 .replace(/^\s*/gm, ''); 
 }
