@@ -168,5 +168,7 @@ var formatProgramme = function(data) {
     return data.replace(/(\r\n|\n|\r|\t)/gm, '')
                 .replace(/<\/channel>/gm, '</channel>\n')
                 .replace(/<\/programme>/gm, '</programme>\n')
+                .replace(/<category.+<\/category>/gm, '')
+                .replace(/<rating.+<\/rating>/gm, '')
                 .replace(/^\s*/gm, ''); 
 }
