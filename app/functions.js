@@ -49,7 +49,7 @@ module.exports.getGzipped = function(uri, filename, callback) {
 module.exports.getProgrammes = function(channel, res) {
     const guidePath = constants.DIR_FILES + constants.GUIDE_IPTV_MANAGER;
     const regex = new RegExp('<programme.+channel="(' + channel + ')"(.|\r\n|\n|\r|\t)+?<\/programme>', 'gm');
-    let readStream = fs.createReadStream(guidePath, { highWaterMark: 50*1024*1024, encoding: 'utf8' });
+    let readStream = fs.createReadStream(guidePath, { highWaterMark: 100*1024*1024, encoding: 'utf8' });
     var result = '';
     readStream.on('data', function(chunk) {
         const matches = chunk.match(regex);
