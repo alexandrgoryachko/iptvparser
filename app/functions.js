@@ -46,17 +46,24 @@ module.exports.getGzipped = function(uri, filename, callback) {
     });
 }
 
-module.exports.getProgrammes = function(channel) {
+module.exports.getProgrammes = function(channel, res) {
     const guidePath = constants.DIR_FILES + constants.GUIDE_IPTV_MANAGER;
-    const data = fs.readFileSync(guidePath, 'utf8');
     const regex = new RegExp('<programme.+channel="(' + channel + ')"(.|\r\n|\n|\r|\t)+?<\/programme>', 'gm');
-    const matches = data.match(regex);
-    let result = '';
-    if (matches) {
-        result = matches.map(line => line.replace(/<icon.*\/>/gm, '')).join('\n');
-        result = formatProgramme(result);
-    }
-    return result;
+    let readStream = fs.createReadStream(guidePath, { highWaterMark: 50*1024*1024, encoding: 'utf8' });
+    var result = '';
+    readStream.on('data', function(chunk) {
+        const matches = chunk.match(regex);
+        let data = '';
+        if (matches) {
+            data = matches.map(line => line.replace(/<icon.*\/>/gm, '')).join('\n');
+            data = formatProgramme(data);
+        }
+        result += data;
+    }).on('end', function() {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+        res.end(result);
+    });
 }
 
 module.exports.isFileExist = function(path) {

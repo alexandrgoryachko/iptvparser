@@ -8,10 +8,7 @@ module.exports.homepage = function(req, res) {
 module.exports.getGuide = function(req, res) {
     try {
         const channel = req.url.split('?channel=').pop();
-        const result = functions.getProgrammes(channel);
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-        res.end(result);
+        functions.getProgrammes(channel, res);
     } catch (ex) {
         res.statusCode = 404;
         res.end(JSON.stringify(ex));
