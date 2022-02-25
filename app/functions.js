@@ -34,7 +34,7 @@ module.exports.getGzipped = function(uri, filename, callback) {
             buffer.push(data.toString())
 
         }).on("end", function() {
-            fs.writeFileSync(filename, buffer.join(""));
+            fs.writeFileSync(filename, buffer.join(""), 'utf8');
             // response and decompression complete, join the buffer and return
             callback(); 
 
@@ -137,7 +137,7 @@ module.exports.saveFile = function(headers, body) {
     if (headers.insert !== 'true' && fs.existsSync(filePath)) {
         data = fs.readFileSync(filePath, 'utf8');
     }
-    fs.writeFileSync(filePath, data + body);
+    fs.writeFileSync(filePath, data + body, 'utf8');
 
     if (headers.zipped !== 'true') {
         const fileContents = fs.createReadStream(filePath);
@@ -153,7 +153,7 @@ module.exports.formatGuide = function(filePath) {
                 .replace(/<\/channel>/gm, '</channel>\n')
                 .replace(/<\/programme>/gm, '</programme>\n')
                 .replace(/^\s*/gm, '');
-    fs.writeFileSync(filePath, data);
+    fs.writeFileSync(filePath, data, 'utf8');
 }
 
 module.exports.ungzipFile = function(filePath, callback) {
