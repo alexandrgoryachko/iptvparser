@@ -78,6 +78,7 @@ module.exports.saveFile = function(req, res) {
                 isSuccess: true
             };
             try {
+                body = decodeURI(body).replaceAll('%2F', '\\');
                 functions.saveFile(headers, body);
             } catch (err) {
                 result = {
