@@ -70,6 +70,9 @@ module.exports.saveFile = function(req, res) {
         const headers = req.headers;
         let body = '';
         req.on('data', (chunk) => {
+            if (chunk.includes('�')) {
+                console.log('warn! ');
+            }
             body += chunk.toString();
         });
 

@@ -133,9 +133,6 @@ module.exports.readFile = function(filePath) {
 
 module.exports.saveFile = function(headers, body) {
     let data = '';
-    if (body.includes('�')) {
-        console.log('warn! ');
-    }
     const filePath = constants.DIR_FILES + headers.file;
     if (headers.insert !== 'true' && fs.existsSync(filePath)) {
         data = fs.readFileSync(filePath, 'utf8');
