@@ -3,7 +3,7 @@ var url = require('url');
 
 const routes = require('./app/routes')
 
-var app_port = process.env.PORT || 8080;
+var app_port = process.env.PORT || 80;
 
 http.createServer(function(req, res) {
     //get url infomation
